@@ -1,11 +1,10 @@
-from pyspark.sql import SparkSession
 # Не використовувати Pandas та UDF
 # Без collect() та toPandas()
-spark = SparkSession.builder \
-    .appName("My Spark Application") \
-    .getOrCreate()
 
-print("This is the project of Moshkovskyi Ivan")
-print("Spark session is created:", spark)
+from basic_dfs.basic_dfs_moshkovskyi import basic_test_df
 
-spark.stop()
+def view_dataframe():
+    df = basic_test_df()
+    df.show()
+
+view_dataframe()
