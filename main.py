@@ -10,7 +10,7 @@ def view_dataframe():
 view_dataframe()
 """
 
-import pyspark
+import pyspark.sql.types as t
 from pyspark.sql import SparkSession
 from io1 import read_ratings_df
 from io1 import RATINGS_FILE_PATH
@@ -21,3 +21,9 @@ spark_session = (SparkSession.builder
                                  .getOrCreate()
                      )
 df = read_ratings_df(RATINGS_FILE_PATH, spark_session)
+
+df_schema = t.StructType([
+    t.StructField("ID", t.StringType(), False),
+    t.StructField("AverageRating", t.DoubleType(), True),
+    t.StructField("VotesNumber", t.IntegerType(), True)
+])
