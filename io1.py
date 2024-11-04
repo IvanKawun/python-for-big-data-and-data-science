@@ -8,5 +8,13 @@ def read_ratings_df(path, spark_session):
         t.StructField("VotesNumber", t.IntegerType(), True)
     ])
 
-    read_df = spark_session.read.csv(path, header=True)
+    read_df = spark_session.read.csv(path,
+                                     header=True,
+                                     schema=df_schema,
+                                     nullValue= "null",
+                                     nanValue="NaN",
+                                     mode="DROPMALFORMED",
+                                     inferSchema=False,
+                                     multiLine=True,
+                                     )
     return read_df
