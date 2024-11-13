@@ -16,6 +16,7 @@ from io1 import read_ratings_df, write_ratings_df_to_csv
 from io1 import RATINGS_FILE_PATH
 from io1 import RESULTS_PACKAGE_PATH
 from title_ratings_editing import transform_title_ratings
+from title_crew_editing import transform_title_crew
 
 spark_session = (SparkSession.builder
                  .master("local")
@@ -25,6 +26,9 @@ spark_session = (SparkSession.builder
 
 df_ratings = read_ratings_df(RATINGS_FILE_PATH, spark_session)
 df_transformed = transform_title_ratings(df_ratings)
-df_transformed.show()
 write_ratings_df_to_csv(df_transformed, RESULTS_PACKAGE_PATH)
+
+df_crew = spark_session.read.option("delimiter", "\t").csv("data/title.crew.tsv.gz", header=True)
+df_crew_transformed = transform_title_crew(df_crew)
+write_ratings_df_to_csv(df_crew_transformed, RESULTS_PACKAGE_PATH)
 
