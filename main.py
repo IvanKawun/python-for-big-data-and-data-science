@@ -17,13 +17,14 @@ from io1 import RATINGS_FILE_PATH
 from io1 import RESULTS_PACKAGE_PATH
 from title_ratings_editing import transform_title_ratings
 from title_crew_editing import transform_title_crew
+from title_principals_editing import transform_title_principals
 
 spark_session = (SparkSession.builder
                  .master("local")
                  .appName("ratings_dfs")
                  .getOrCreate()
                 )
-
+"""
 df_ratings = read_ratings_df(RATINGS_FILE_PATH, spark_session)
 df_transformed = transform_title_ratings(df_ratings)
 write_ratings_df_to_csv(df_transformed, RESULTS_PACKAGE_PATH)
@@ -31,4 +32,9 @@ write_ratings_df_to_csv(df_transformed, RESULTS_PACKAGE_PATH)
 df_crew = spark_session.read.option("delimiter", "\t").csv("data/title.crew.tsv.gz", header=True)
 df_crew_transformed = transform_title_crew(df_crew)
 write_ratings_df_to_csv(df_crew_transformed, RESULTS_PACKAGE_PATH)
+"""
 
+df_principals = spark_session.read.option("delimiter", "\t").csv("data/title.principals.tsv.gz", header=True)
+df_principals_transformed = transform_title_principals(df_principals)
+df_principals_transformed.show()
+write_ratings_df_to_csv(df_principals_transformed, RESULTS_PACKAGE_PATH)
