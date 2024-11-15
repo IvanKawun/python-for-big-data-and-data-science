@@ -17,11 +17,13 @@ from pyspark.sql.pandas.types import from_arrow_type
 from io1 import read_ratings_df, write_ratings_df_to_csv
 from io1 import RATINGS_FILE_PATH
 from io1 import RESULTS_PACKAGE_PATH
+from title_episode_editing import transform_title_episode
 from title_ratings_editing import transform_title_ratings
 from title_crew_editing import transform_title_crew
 from title_principals_editing import transform_title_principals
 from name_basics_editing import transform_name_basics
 from title_akas_editing import transform_title_akas
+from title_basics_editing import transform_title_basics
 
 spark_session = (SparkSession.builder
                  .master("local")
@@ -47,7 +49,18 @@ df_basics = spark_session.read.option("delimiter", "\t").csv("data/name.basics.t
 df_basics_transformed = transform_name_basics(df_basics)
 write_ratings_df_to_csv(df_basics_transformed, RESULTS_PACKAGE_PATH)
 """
-
+"""
 df_akas = spark_session.read.option("delimiter", "\t").csv("data/title.akas.tsv.gz", header=True)
 df_akas_transformed = transform_title_akas(df_akas)
 write_ratings_df_to_csv(df_akas_transformed, RESULTS_PACKAGE_PATH)
+"""
+"""
+df_episode = spark_session.read.option("delimiter", "\t").csv("data/title.episode.tsv.gz", header=True)
+df_episode_transformed = transform_title_episode(df_episode)
+write_ratings_df_to_csv(df_episode_transformed, RESULTS_PACKAGE_PATH)
+"""
+"""
+df_title_basics = spark_session.read.option("delimiter", "\t").csv("data/title.basics.tsv.gz", header=True)
+df_episode_transformed = transform_title_basics(df_title_basics)
+write_ratings_df_to_csv(df_episode_transformed, RESULTS_PACKAGE_PATH)
+"""

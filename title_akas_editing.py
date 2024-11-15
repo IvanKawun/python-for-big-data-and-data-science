@@ -12,7 +12,7 @@ def transform_title_akas(df_akas):
 
     for col in df_akas.columns:
         df_akas = df_akas.withColumn(col, F.when(F.col(col) == "\\N", None).otherwise(F.col(col)))
-        
+
     df_akas = df_akas.withColumn("is_original_title", F.col("is_original_title").cast("boolean"))
 
     return df_akas
