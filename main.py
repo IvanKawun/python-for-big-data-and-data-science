@@ -12,6 +12,7 @@ view_dataframe()
 
 import pyspark.sql.types as t
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
 
 from agregation_sorting_and_window_functions import most_active_director, movies_with_three_genres, count_program_types, \
     longest_tv_show, earliest_born_person
@@ -19,6 +20,7 @@ from filtering import count_adult_movies, top_n_highest_rated, top_n_most_voted
 from io1 import read_ratings_df, write_ratings_df_to_csv
 from io1 import RATINGS_FILE_PATH
 from io1 import RESULTS_PACKAGE_PATH
+from joins_unions import movies_with_ratings, movies_with_known_principals
 from nulls_and_duplicates_editing import drop_writers_column, drop_characters_column, drop_job_column, \
     drop_language_column, fill_null_start_year, title_duplicates_removal, ratings_duplicates_removal
 from title_episode_editing import transform_title_episode
@@ -87,6 +89,7 @@ write_ratings_df_to_csv(df_ratings_edited, RESULTS_PACKAGE_PATH)
 """
 Business questions realisation with filtering
 """
+
 "Question 1"
 adult_movie_count = count_adult_movies(df_title_basics_edited1)
 print(f"Number of adult movies: {adult_movie_count}")
@@ -126,8 +129,27 @@ elp_df = earliest_born_person(df_basics_transformed)
 write_ratings_df_to_csv(elp_df, RESULTS_PACKAGE_PATH)
 
 
+"""
+Business questions realisation using join
+"""
+print("Unique tconst in df_basics:", df_title_basics_edited1.select('tconst').distinct().count())
+print("Unique id in df_ratings:", df_ratings_edited.select('id').distinct().count())
+
+df_ratings_edited = df_ratings_edited.withColumn("id", col("id").substr(2, 8))
+
+intersected = df_title_basics_edited1.join(df_ratings_edited, df_title_basics_edited1['tconst'] == df_ratings_edited['id'], 'inner')
+print("Intersection count:", intersected.count())
+intersected.show(10, truncate=False)
+
+print("Movies with ratings and votes:")
+mwr_df = movies_with_ratings(df_title_basics_edited1, df_ratings_edited)
+write_ratings_df_to_csv(mwr_df, RESULTS_PACKAGE_PATH)
 
 
+df_principals_edited_2 = df_principals_edited_2.withColumn("tconst", col("tconst").substr(2, 8))
+print("Movies with known principals:")
+mwkp_df = movies_with_known_principals(df_title_basics_edited1, df_principals_edited_2)
+write_ratings_df_to_csv(mwkp_df, RESULTS_PACKAGE_PATH)
 
 
 
